@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DZ PAGE | Multi-Service Toolkit</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+
+    <style>
+        body { font-family: 'Poppins', sans-serif; transition: background-color 0.3s ease; overflow-x: hidden !important; width: 100%; }
+        #main-header { position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; z-index: 9999 !important; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
+        .dark #main-header { background: rgba(15, 23, 42, 0.85); }
+        .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); transition: transform 0.3s ease, border-color 0.3s ease; }
+        .dark .glass-card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .glass-card:hover { transform: translateY(-5px); }
+        .float-anim { animation: float 4s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-12px); } }
+        [data-aos] { pointer-events: none; }
+        .aos-animate { pointer-events: auto; }
+
+        /* Mobile Menu Animation */
+        #mobile-menu {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #mobile-menu.active {
+            max-height: 600px;
+            opacity: 1;
+            border-bottom-width: 1px;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-slate-950 text-slate-900 dark:text-white pt-24">
+
+    <header id="main-header" class="border-b border-slate-200/50 dark:border-slate-800/50">
+        <div class="container mx-auto px-4 md:px-10 h-16 md:h-20 flex items-center justify-between">
+            
+            <a href="#" class="flex items-center space-x-2 shrink-0">
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <i class="fa-solid fa-bolt text-white text-sm"></i>
+                </div>
+                <span class="text-xl font-bold dark:text-white uppercase tracking-tight">DZ<span class="text-blue-600">PAGE</span></span>
+            </a>
+
+            <nav class="hidden lg:flex items-center space-x-8 text-sm font-semibold text-slate-600 dark:text-slate-300">
+                <a href="#services" class="hover:text-blue-600 transition">Free Bots</a>
+                <a href="#" class="hover:text-blue-600 transition">Social Boost</a>
+                <a href="#" class="hover:text-blue-600 transition">AI Chat</a>
+                <a href="#services" class="hover:text-blue-600 transition">API Suite</a>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                <div id="desktop-auth" class="hidden lg:flex items-center space-x-4">
+                    <div id="auth-loading" class="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                    <a href="login.html" id="login-btn-dt" class="hidden px-6 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl hover:bg-blue-700 transition">LOGIN</a>
+                    
+                    <div id="user-profile-dt" class="hidden flex items-center space-x-3 border-l pl-4 border-slate-200 dark:border-slate-700">
+                        <div class="text-right hidden sm:block">
+                            <p id="user-name-dt" class="text-[11px] font-bold text-slate-900 dark:text-white leading-none mb-1"></p>
+                            <p class="text-[9px] text-blue-600 font-bold uppercase tracking-tighter">Verified User</p>
+                        </div>
+                        <img id="user-img-dt" src="" class="w-9 h-9 rounded-full border-2 border-blue-600">
+                        <button onclick="logout()" class="text-[10px] bg-red-500/10 text-red-500 px-2 py-1 rounded-lg font-bold hover:bg-red-500 hover:text-white transition">LOGOUT</button>
+                    </div>
+                </div>
+
+                <button id="mobile-menu-btn" class="lg:hidden p-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 shrink-0 overflow-hidden w-10 h-10 flex items-center justify-center transition-transform active:scale-90">
+                    <i class="fa-solid fa-bars-staggered text-lg" id="menu-icon"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="lg:hidden w-full bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+            <div class="flex flex-col p-6 space-y-4 font-semibold">
+                <div id="user-info-mb" class="hidden flex items-center space-x-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+                    <img id="user-img-mb" src="" class="w-12 h-12 rounded-full border-2 border-blue-600">
+                    <div>
+                        <p id="user-name-mb" class="text-sm font-bold"></p>
+                        <button onclick="logout()" class="text-xs text-red-500 font-bold">Logout Account</button>
+                    </div>
+                </div>
+                
+                <a href="login.html" id="login-btn-mb" class="hidden py-3 bg-blue-600 text-white text-center rounded-2xl font-bold">Login / Register</a>
+
+                <a href="free-bots.html" class="hover:text-blue-600 py-2 flex items-center"><i class="fa-solid fa-robot w-8 text-blue-600"></i> Free Bots</a>
+                <a href="#" class="hover:text-blue-600 py-2 flex items-center"><i class="fa-solid fa-rocket w-8 text-purple-600"></i> Social Boost</a>
+                <a href="#" class="hover:text-blue-600 py-2 flex items-center"><i class="fa-solid fa-brain w-8 text-emerald-600"></i> AI Chat</a>
+                <a href="#services" class="hover:text-blue-600 py-2 flex items-center"><i class="fa-solid fa-code w-8 text-orange-500"></i> API Suite</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="relative pt-10 pb-24 px-6">
+        <div class="container mx-auto text-center" data-aos="zoom-in" data-aos-duration="1000">
+            <h1 class="text-5xl md:text-8xl font-extrabold mb-8 tracking-tighter float-anim">
+                Elevate Your <span class="bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent">Digital Game</span>
+            </h1>
+            <p class="text-slate-500 dark:text-slate-400 text-lg md:text-xl max-w-3xl mx-auto mb-12">
+                The hub for Free Bots, Social Boosting, and AI automation. Secure, fast, and always online.
+            </p>
+            <div class="flex flex-col md:flex-row justify-center items-center gap-5">
+                 <a href="#services" class="px-10 py-4 bg-blue-600 rounded-2xl font-bold text-white shadow-lg shadow-blue-600/40 hover:bg-blue-700 transition">Explore Services</a>
+                 <button onclick="toggleDarkMode()" class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 glass-card">
+                    <i id="theme-icon" class="fa-solid fa-moon text-xl"></i>
+                 </button>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="container mx-auto py-20 px-6">
+        <div class="text-center mb-16" data-aos="fade-up">
+            <h2 class="text-3xl font-bold uppercase tracking-widest text-blue-600 mb-2">Our Tools</h2>
+            <div class="h-1 w-20 bg-blue-600 mx-auto rounded-full"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="glass-card p-8 rounded-[2rem] border border-blue-500/20" data-aos="fade-up" data-aos-delay="100">
+                <i class="fa-solid fa-robot text-3xl text-blue-500 mb-6"></i>
+                <h3 class="text-xl font-bold mb-2">Free Bots</h3>
+                <p class="text-sm text-slate-500 leading-relaxed">High-performance WhatsApp automation bots with 24/7 uptime.</p>
+                <a href="free-bots.html" class="mt-6 inline-block text-blue-500 font-bold text-sm">LAUNCH BOT →</a>
+            </div>
+
+            <div class="glass-card p-8 rounded-[2rem] border border-purple-500/20" data-aos="fade-up" data-aos-delay="200">
+                <i class="fa-solid fa-rocket text-3xl text-purple-500 mb-6"></i>
+                <h3 class="text-xl font-bold mb-2">Social Boost</h3>
+                <p class="text-sm text-slate-500 leading-relaxed">Boost your followers and engagement on Instagram and TikTok.</p>
+                <a href="social_boost.html" class="mt-6 inline-block text-purple-600 font-bold text-sm">GET STARTED →</a>
+            </div>
+
+            <div class="glass-card p-8 rounded-[2rem] border border-emerald-500/20" data-aos="fade-up" data-aos-delay="300">
+                <i class="fa-solid fa-brain text-3xl text-emerald-500 mb-6"></i>
+                <h3 class="text-xl font-bold mb-2">AI Chat</h3>
+                <p class="text-sm text-slate-500 leading-relaxed">Access smart AI models for creative writing and problem solving.</p>
+                <a href="#" class="mt-6 inline-block text-emerald-500 font-bold text-sm">CHAT NOW →</a>
+            </div>
+
+            <div class="glass-card p-8 rounded-[2rem] border border-orange-500/20" data-aos="fade-up" data-aos-delay="400">
+                <i class="fa-solid fa-code text-3xl text-orange-500 mb-6"></i>
+                <h3 class="text-xl font-bold mb-2">API Suite</h3>
+                <p class="text-sm text-slate-500 leading-relaxed">Powerful developer APIs for integration and data services.</p>
+                <a href="#" class="mt-6 inline-block text-orange-500 font-bold text-sm">VIEW DOCS →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="border-t border-slate-200 dark:border-slate-800 py-10 text-center">
+        <p class="text-slate-500 text-sm">© 2026 DZ PAGE. All rights reserved.</p>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC_67UNhad_m-LbjfmY17-FkcWoxntTnCw",
+            authDomain: "dz-page.firebaseapp.com",
+            projectId: "dz-page",
+            storageBucket: "dz-page.firebasestorage.app",
+            messagingSenderId: "280353031470",
+            appId: "1:280353031470:web:9095121dffa663ae0e26bf"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        const authLoading = document.getElementById('auth-loading');
+        const loginBtnDt = document.getElementById('login-btn-dt');
+        const userProfileDt = document.getElementById('user-profile-dt');
+        const loginBtnMb = document.getElementById('login-btn-mb');
+        const userInfoMb = document.getElementById('user-info-mb');
+        const menuBtn = document.getElementById('mobile-menu-btn');
+
+        firebase.auth().onAuthStateChanged((user) => {
+            if(authLoading) authLoading.classList.add('hidden');
+            if (user) {
+                loginBtnDt.classList.add('hidden');
+                loginBtnMb.classList.add('hidden');
+                userProfileDt.classList.remove('hidden');
+                userInfoMb.classList.remove('hidden');
+                const displayName = user.displayName || user.email.split('@')[0];
+                const photo = user.photoURL || `https://ui-avatars.com/api/?name=${displayName}&background=2563eb&color=fff&bold=true`;
+                document.getElementById('user-img-dt').src = photo;
+                document.getElementById('user-name-dt').innerText = displayName;
+                document.getElementById('user-img-mb').src = photo;
+                document.getElementById('user-name-mb').innerText = displayName;
+                menuBtn.innerHTML = `<img src="${photo}" class="w-full h-full object-cover rounded-full border border-blue-600">`;
+            } else {
+                loginBtnDt.classList.remove('hidden');
+                loginBtnMb.classList.remove('hidden');
+                userProfileDt.classList.add('hidden');
+                userInfoMb.classList.add('hidden');
+                menuBtn.innerHTML = `<i class="fa-solid fa-bars-staggered text-lg" id="menu-icon"></i>`;
+            }
+        });
+
+        function logout() { firebase.auth().signOut().then(() => window.location.reload()); }
+
+        AOS.init({ duration: 800, once: false, mirror: true });
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            const isDark = html.classList.contains('dark');
+            document.getElementById('theme-icon').className = isDark ? 'fa-solid fa-sun text-xl' : 'fa-solid fa-moon text-xl';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        const menu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menu.classList.toggle('active');
+            const iconElement = document.getElementById('menu-icon');
+            if(iconElement) {
+                iconElement.className = menu.classList.contains('active') ? 'fa-solid fa-xmark text-xl' : 'fa-solid fa-bars-staggered text-xl';
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!menu.contains(e.target) && !menuBtn.contains(e.target)) {
+                menu.classList.remove('active');
+                const iconElement = document.getElementById('menu-icon');
+                if(iconElement) iconElement.className = 'fa-solid fa-bars-staggered text-xl';
+            }
+        });
+
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            if(document.getElementById('theme-icon')) document.getElementById('theme-icon').className = 'fa-solid fa-sun text-xl';
+        }
+    </script>
+</body>
+</html>
