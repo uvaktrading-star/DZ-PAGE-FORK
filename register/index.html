@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | DZ PAGE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        tailwind.config = { darkMode: 'class' }
+        
+        function applySavedTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+        applySavedTheme();
+    </script>
+
+    <style>
+        body { font-family: 'Poppins', sans-serif; transition: background-color 0.3s ease; }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(0, 0, 0, 0.1); }
+        .dark .glass { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); }
+        
+        input { background: rgba(0, 0, 0, 0.05) !important; border: 1px solid rgba(0, 0, 0, 0.1) !important; color: black !important; }
+        .dark input { background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; color: white !important; }
+        input:focus { border-color: #2563eb !important; outline: none; }
+        
+        .error-shake { animation: shake 0.4s ease-in-out; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white flex items-center justify-center min-h-screen px-4 py-10 relative">
+
+    <div class="glass w-full max-w-md p-8 md:p-10 rounded-[2.5rem] shadow-2xl transition-all duration-500">
+        <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-600/40">
+            <i class="fa-solid fa-user-plus text-white text-3xl"></i>
+        </div>
+        
+        <h1 class="text-3xl font-bold mb-2 text-center">Create Account</h1>
+        <p class="text-slate-500 dark:text-slate-400 text-sm mb-6 text-center">Join DZ PAGE toolkit today</p>
+
+        <div id="error-box" class="hidden mb-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/50 text-red-500 text-xs flex items-center space-x-3">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span id="error-msg"></span>
+        </div>
+
+        <div class="space-y-4">
+            <div>
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 ml-1">Full Name</label>
+                <input type="text" id="name" placeholder="John Doe" class="w-full px-5 py-4 rounded-2xl mt-1 text-sm">
+            </div>
+            <div>
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 ml-1">Email Address</label>
+                <input type="email" id="email" placeholder="example@mail.com" class="w-full px-5 py-4 rounded-2xl mt-1 text-sm">
+            </div>
+            <div>
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 ml-1">Password</label>
+                <input type="password" id="password" placeholder="••••••••" class="w-full px-5 py-4 rounded-2xl mt-1 text-sm">
+            </div>
+            <button onclick="emailRegister()" id="reg-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-blue-600/20 active:scale-95 flex justify-center items-center">
+                <span id="btn-text">Sign Up</span>
+                <div id="btn-loader" class="hidden w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            </button>
+        </div>
+
+        <div class="relative flex items-center py-6">
+            <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+            <span class="flex-shrink mx-4 text-slate-400 text-xs uppercase tracking-widest font-bold">OR</span>
+            <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+        </div>
+
+        <button onclick="googleLogin()" class="w-full flex items-center justify-center space-x-3 bg-white dark:bg-slate-100 text-black py-4 rounded-2xl font-bold hover:bg-slate-100 dark:hover:bg-white transition-all active:scale-95 border border-slate-200">
+            <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-5 h-5">
+            <span>Sign up with Google</span>
+        </button>
+
+        <div class="mt-8 text-center">
+            <p class="text-slate-500 dark:text-slate-400 text-sm">
+                Already have an account? 
+                <a href="login.html" class="text-blue-500 font-bold hover:underline">Login</a>
+            </p>
+            <a href="index.html" class="inline-block mt-6 text-slate-400 text-xs font-semibold hover:text-blue-600 transition">← Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Firebase Configuration ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyC_67UNhad_m-LbjfmY17-FkcWoxntTnCw",
+            authDomain: "dz-page.firebaseapp.com",
+            projectId: "dz-page",
+            storageBucket: "dz-page.firebasestorage.app",
+            messagingSenderId: "280353031470",
+            appId: "1:280353031470:web:9095121dffa663ae0e26bf"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore(); // Database initialization
+
+        const errorBox = document.getElementById('error-box');
+        const errorMsg = document.getElementById('error-msg');
+        const btnText = document.getElementById('btn-text');
+        const btnLoader = document.getElementById('btn-loader');
+
+        function showError(message) {
+            errorMsg.innerText = message;
+            errorBox.classList.remove('hidden');
+            errorBox.classList.add('error-shake');
+            setLoading(false);
+            setTimeout(() => errorBox.classList.remove('error-shake'), 400);
+        }
+
+        function setLoading(isLoading) {
+            if (isLoading) {
+                btnText.classList.add('hidden');
+                btnLoader.classList.remove('hidden');
+            } else {
+                btnText.classList.remove('hidden');
+                btnLoader.classList.add('hidden');
+            }
+        }
+
+        // --- 2. Auth & Firestore Logic ---
+        async function emailRegister() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            errorBox.classList.add('hidden');
+
+            if(!name || !email || !password) return showError("Please fill in all fields.");
+            if(password.length < 6) return showError("Password should be at least 6 characters.");
+
+            setLoading(true);
+
+            try {
+                // A. Create User in Firebase Auth
+                const result = await firebase.auth().createUserWithEmailAndPassword(email, password);
+                const user = result.user;
+
+                // B. Update Profile Name
+                await user.updateProfile({ displayName: name });
+
+                // C. 🚀 Firestore එකේ 'users' collection එකට ඩේටා එකතු කිරීම
+                await db.collection('users').doc(user.uid).set({
+                    name: name,
+                    email: email,
+                    coins: 0,
+                    uid: user.uid,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // Sign Out කරවා Login එකට යවනවා
+                await firebase.auth().signOut();
+                
+                alert("Account created successfully! Please login to continue.");
+                window.location.href = "login.html";
+
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        async function googleLogin() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            try {
+                const result = await firebase.auth().signInWithPopup(provider);
+                const user = result.user;
+
+                // Google Login එකෙදී කලින්ම user ඉන්නවද කියලා බලනවා, නැත්තම් විතරක් අලුතින් ඩේටාබේස් එකට දානවා
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (!userDoc.exists) {
+                    await db.collection('users').doc(user.uid).set({
+                        name: user.displayName,
+                        email: user.email,
+                        coins: 0,
+                        uid: user.uid,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+                window.location.href = "index.html";
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+    </script>
+</body>
+</html>

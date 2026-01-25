@@ -190,17 +190,17 @@
             </a>
 
             <nav class="hidden lg:flex items-center space-x-8 text-sm font-semibold text-slate-600 dark:text-slate-300">
-                <a href="#services" class="hover:text-blue-600 transition">Free Bots</a>
-                <a href="#" class="hover:text-blue-600 transition">Social Boost</a>
-                <a href="#" class="hover:text-blue-600 transition">AI Chat</a>
-                <a href="#services" class="hover:text-blue-600 transition">API Suite</a>
+                <a href="/free-bots" class="hover:text-blue-600 transition">Free Bots</a>
+                <a href="/social_boost" class="hover:text-blue-600 transition">Social Boost</a>
+                <a href="#" onclick="openChatFromLink(event)" class="hover:text-blue-600 transition">AI Chat</a>
+                <a href="/api-suite" class="hover:text-blue-600 transition">API Suite</a>
             </nav>
 
             <div class="flex items-center space-x-3">
                 <div id="desktop-auth" class="hidden lg:flex items-center space-x-4">
                     <div id="auth-loading"
                         class="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                    <a href="login.html" id="login-btn-dt"
+                    <a href="/login" id="login-btn-dt"
                         class="hidden px-6 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl hover:bg-blue-700 transition">LOGIN</a>
 
                     <div id="user-profile-dt"
@@ -235,16 +235,16 @@
                     </div>
                 </div>
 
-                <a href="login.html" id="login-btn-mb"
+                <a href="/login" id="login-btn-mb"
                     class="hidden py-3 bg-blue-600 text-white text-center rounded-2xl font-bold">Login / Register</a>
 
-                <a href="free-bots.html" class="hover:text-blue-600 py-2 flex items-center"><i
+                <a href="/free-bots" class="hover:text-blue-600 py-2 flex items-center"><i
                         class="fa-solid fa-robot w-8 text-blue-600"></i> Free Bots</a>
                 <a href="#" class="hover:text-blue-600 py-2 flex items-center"><i
                         class="fa-solid fa-rocket w-8 text-purple-600"></i> Social Boost</a>
-                <a href="#" class="hover:text-blue-600 py-2 flex items-center"><i
+                <a href="#" onclick="openChatFromLink(event)" class="hover:text-blue-600 py-2 flex items-center"><i
                         class="fa-solid fa-brain w-8 text-emerald-600"></i> AI Chat</a>
-                <a href="#services" class="hover:text-blue-600 py-2 flex items-center"><i
+                <a href="/api-suite" class="hover:text-blue-600 py-2 flex items-center"><i
                         class="fa-solid fa-code w-8 text-orange-500"></i> API Suite</a>
             </div>
         </div>
@@ -284,7 +284,7 @@
                 <h3 class="text-xl font-bold mb-2">Free Bots</h3>
                 <p class="text-sm text-slate-500 leading-relaxed">High-performance WhatsApp automation bots with 24/7
                     uptime.</p>
-                <a href="free-bots.html" class="mt-6 inline-block text-blue-500 font-bold text-sm">LAUNCH BOT →</a>
+                <a href="/free-bots" class="mt-6 inline-block text-blue-500 font-bold text-sm">LAUNCH BOT →</a>
             </div>
 
             <div class="glass-card p-8 rounded-[2rem] border border-purple-500/20" data-aos="fade-up"
@@ -293,7 +293,7 @@
                 <h3 class="text-xl font-bold mb-2">Social Boost</h3>
                 <p class="text-sm text-slate-500 leading-relaxed">Boost your followers and engagement on Instagram and
                     TikTok.</p>
-                <a href="social_boost.html" class="mt-6 inline-block text-purple-600 font-bold text-sm">GET STARTED
+                <a href="/social_boost" class="mt-6 inline-block text-purple-600 font-bold text-sm">GET STARTED
                     →</a>
             </div>
 
@@ -303,7 +303,11 @@
                 <h3 class="text-xl font-bold mb-2">AI Chat</h3>
                 <p class="text-sm text-slate-500 leading-relaxed">Access smart AI models for creative writing and
                     problem solving.</p>
-                <a href="#" class="mt-6 inline-block text-emerald-500 font-bold text-sm">CHAT NOW →</a>
+                <a href="#" onclick="openChatFromLink(event)"
+   class="mt-6 inline-block text-emerald-500 font-bold text-sm">
+  CHAT NOW →
+</a>
+
             </div>
 
             <div class="glass-card p-8 rounded-[2rem] border border-orange-500/20" data-aos="fade-up"
@@ -312,7 +316,7 @@
                 <h3 class="text-xl font-bold mb-2">API Suite</h3>
                 <p class="text-sm text-slate-500 leading-relaxed">Powerful developer APIs for integration and data
                     services.</p>
-                <a href="api-suite.html" class="mt-6 inline-block text-orange-500 font-bold text-sm">VIEW DOCS →</a>
+                <a href="/api-suite" class="mt-6 inline-block text-orange-500 font-bold text-sm">VIEW DOCS →</a>
             </div>
         </div>
     </section>
@@ -654,6 +658,20 @@
             }
         }
 
+          function openChatFromLink(e) {
+    e.preventDefault(); // stop page jump
+
+    if (!isChatOpen) {
+      toggleChatWindow();
+    }
+
+    // optional: focus input
+    setTimeout(() => {
+      chatInput.focus();
+    }, 200);
+  }
+
+
         function clearChatHistory() {
             messageHistory = [
                 {
@@ -828,6 +846,19 @@
                 scrollToBottom();
             }
         }
+
+          document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get('chat') === 'open') {
+      // wait a bit to ensure everything is ready
+      setTimeout(() => {
+        if (!isChatOpen) {
+          toggleChatWindow();
+        }
+      }, 300);
+    }
+  });
     </script>
 </body>
 
