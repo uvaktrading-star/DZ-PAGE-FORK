@@ -178,7 +178,7 @@
                     <div id="container-04fde588c8c3c4ebc19bb82d26eddcf6"></div>
                 </div>
 
-                <a href="index.html" class="block text-center text-[10px] font-bold text-slate-500 uppercase tracking-widest hover:text-white transition-colors">
+                <a href="/" class="block text-center text-[10px] font-bold text-slate-500 uppercase tracking-widest hover:text-white transition-colors">
                     <i class="fa-solid fa-arrow-left mr-1"></i> Back to Main
                 </a>
             </div>
@@ -214,7 +214,7 @@
             
             const botId = localStorage.getItem('bot_id');
             const botPass = localStorage.getItem('bot_pass');
-            if(!botId) { window.location.href = 'login.html'; return; }
+            if(!botId) { window.location.href = '/login'; return; }
 
             try {
                 const res = await fetch(API_URL, {

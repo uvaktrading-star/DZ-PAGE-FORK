@@ -47,7 +47,7 @@
 
     <header id="main-header">
         <div class="container mx-auto px-4 h-20 flex items-center justify-between">
-            <a href="index.html" class="flex items-center space-x-3">
+            <a href="/" class="flex items-center space-x-3">
                 <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-xl flex items-center justify-center shadow-lg">
                     <i class="fa-solid fa-house text-white text-sm"></i>
                 </div>
@@ -127,7 +127,7 @@
                     <h2 class="text-3xl md:text-4xl font-black mb-3">DEPLOY <span class="text-blue-500">BOT</span></h2>
                     <p class="text-slate-400 text-sm max-w-sm">Ready to start your own AI assistant? Head over to our free bot deployment engine.</p>
                 </div>
-                <a href="free-bots.html" class="relative z-10 px-10 py-5 bg-white text-black hover:bg-blue-500 hover:text-white rounded-2xl font-black text-sm uppercase tracking-widest transition-all duration-300 flex items-center gap-3">
+                <a href="/free-bots" class="relative z-10 px-10 py-5 bg-white text-black hover:bg-blue-500 hover:text-white rounded-2xl font-black text-sm uppercase tracking-widest transition-all duration-300 flex items-center gap-3">
                     Go to Deploy <i class="fa-solid fa-arrow-right"></i>
                 </a>
             </div>
@@ -151,7 +151,7 @@
 
         // Auth Listener
         firebase.auth().onAuthStateChanged((user) => {
-            if (!user) { window.location.href = "login.html"; }
+            if (!user) { window.location.href = "/login"; }
             else { 
                 fetchUserData(user);
                 checkDailyAvailability(user);

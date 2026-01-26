@@ -142,7 +142,7 @@
                     localStorage.setItem('bot_id', id);
                     localStorage.setItem('bot_pass', password); 
                     localStorage.setItem('bot_settings', JSON.stringify(data.settings));
-                    window.location.href = 'dashboard.html';
+                    window.location.href = '/dashboard';
                 } else {
                     showError(data.error || "Invalid Credentials");
                     resetBtn(btn);
