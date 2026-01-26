@@ -166,7 +166,7 @@
                 await firebase.auth().signOut();
                 
                 alert("Account created successfully! Please login to continue.");
-                window.location.href = "/login";
+                window.location.href = "/";
 
             } catch (error) {
                 showError(error.message);
@@ -190,7 +190,7 @@
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 }
-                window.location.href = "/register";
+                window.location.href = "/";
             } catch (error) {
                 showError(error.message);
             }

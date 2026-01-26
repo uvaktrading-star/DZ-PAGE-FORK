@@ -160,7 +160,7 @@
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
             }
-            window.location.href = "/login";
+            window.location.href = "/";
         }
 
         // --- 3. Auth Logic ---
@@ -202,7 +202,7 @@
                 const userRef = db.collection('users').doc(user.uid);
                 userRef.get().then(doc => {
                     if (doc.exists) {
-                        window.location.href = "/login";
+                        window.location.href = "/";
                     }
                     // නැත්නම් sync function එකට යවනවා (මේක වෙන්නේ ඉතා කලාතුරකින්)
                 });
