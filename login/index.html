@@ -145,13 +145,11 @@
         }
 
         // --- 2. Database Sync Logic ---
-        // මේකෙන් තමයි යූසර් ලොග් වෙද්දී ඩේටාබේස් එකේ රෙකෝඩ් එකක් තියෙනවද කියලා බලලා නැත්නම් හදන්නේ
         async function syncUserToDatabase(user) {
             const userRef = db.collection('users').doc(user.uid);
             const doc = await userRef.get();
 
             if (!doc.exists) {
-                // ඩේටා නැත්නම් අලුතින් හදනවා
                 await userRef.set({
                     name: user.displayName || "User",
                     email: user.email,
@@ -188,6 +186,12 @@
 
         function googleLogin() {
             const provider = new firebase.auth.GoogleAuthProvider();
+            // --- මෙන්න මේ පේළිය එකතු කළා ---
+            // මේකෙන් තමයි හැමවෙලේම account එක තෝරන්න පෙන්වන්නේ
+            provider.setCustomParameters({
+                prompt: 'select_account'
+            });
+
             firebase.auth().signInWithPopup(provider)
                 .then((result) => {
                     syncUserToDatabase(result.user);
@@ -195,16 +199,14 @@
                 .catch((error) => showError(error.message));
         }
 
-        // Redirect if already logged in - ඒත් Database එක එක්ක Sync වෙලාම යන්න ඕනේ
+        // Redirect if already logged in
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
-                // මෙතනදීත් ඩේටාබේස් එක චෙක් කරන එක ආරක්ෂිතයි
                 const userRef = db.collection('users').doc(user.uid);
                 userRef.get().then(doc => {
                     if (doc.exists) {
                         window.location.href = "/";
                     }
-                    // නැත්නම් sync function එකට යවනවා (මේක වෙන්නේ ඉතා කලාතුරකින්)
                 });
             }
         });
