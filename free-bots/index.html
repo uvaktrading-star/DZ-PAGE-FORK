@@ -69,17 +69,12 @@
 
     <main class="container mx-auto px-6 mt-12">
         <div class="text-center mb-16" data-aos="fade-down">
-            <h1 class="text-5xl md:text-7xl font-black mb-4 tracking-tight uppercase">
-                Deploy <span class="text-blue-500">Bot</span>
-            </h1>
-            <p class="text-slate-400 max-w-lg mx-auto font-medium">
-                Choose your bot. Unlocked bots remain active for <span class="text-white">48 hours</span> before requiring renewal.
-            </p>
+            <h1 class="text-5xl md:text-7xl font-black mb-4 tracking-tight uppercase">Deploy <span class="text-blue-500">Bot</span></h1>
+            <p class="text-slate-400 max-w-lg mx-auto font-medium">Choose your bot. Unlocked bots remain active for <span class="text-white">48 hours</span> before requiring renewal.</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            
-            <div class="glass-card p-6 rounded-[2.5rem]" data-aos="zoom-in-up" data-aos-delay="100">
+        <div class="flex justify-center max-w-6xl mx-auto">
+            <div class="glass-card p-6 rounded-[2.5rem] w-full max-w-md" data-aos="zoom-in-up">
                 <img src="images/Gemini_Generated_Image_4xcl2e4xcl2e4xcl.png" class="bot-thumb" alt="Zanta-MD">
                 <div class="px-2">
                     <div class="flex justify-between items-center mb-3">
@@ -91,39 +86,12 @@
                     <a href="/earn" id="earn-1" class="earn-link hidden"><i class="fa-solid fa-circle-exclamation mr-1"></i> Not enough coins? Earn Now</a>
                 </div>
             </div>
-
-            <div class="glass-card p-6 rounded-[2.5rem]" data-aos="zoom-in-up" data-aos-delay="200">
-                <img src="images/Gemini_Generated_Image_4xcl2e4xcl2e4xcl.png" class="bot-thumb" alt="Danuwa-MD">
-                <div class="px-2">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="text-2xl font-bold tracking-tight text-purple-500">Danuwa-MD</h3>
-                        <span class="bg-purple-500/10 text-purple-400 text-[10px] font-bold px-3 py-1 rounded-full border border-purple-500/20">v1.0.0</span>
-                    </div>
-                    <p class="text-slate-400 text-sm leading-relaxed mb-8">Advanced group security. Anti-link, anti-spam, and automated moderation tools.</p>
-                    <button id="btn-bot-2" class="w-full py-4 bg-purple-600 text-white rounded-2xl font-bold transition-all shadow-xl">LOADING...</button>
-                    <a href="/earn" id="earn-2" class="earn-link hidden"><i class="fa-solid fa-circle-exclamation mr-1"></i> Not enough coins? Earn Now</a>
-                </div>
-            </div>
-
-            <div class="glass-card p-6 rounded-[2.5rem]" data-aos="zoom-in-up" data-aos-delay="300">
-                <img src="images/Gemini_Generated_Image_4xcl2e4xcl2e4xcl.png" class="bot-thumb" alt="Flexa-MD">
-                <div class="px-2">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="text-2xl font-bold tracking-tight text-emerald-500">Flexa-MD</h3>
-                        <span class="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-3 py-1 rounded-full border border-emerald-500/20">v1.0.0</span>
-                    </div>
-                    <p class="text-slate-400 text-sm leading-relaxed mb-8">AI-powered downloaders and music tools. Get media from any platform instantly.</p>
-                    <button id="btn-bot-3" class="w-full py-4 bg-emerald-600 text-white rounded-2xl font-bold transition-all shadow-xl">LOADING...</button>
-                    <a href="/earn" id="earn-3" class="earn-link hidden"><i class="fa-solid fa-circle-exclamation mr-1"></i> Not enough coins? Earn Now</a>
-                </div>
-            </div>
-
         </div>
     </main>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Firebase initialization
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyC_67UNhad_m-LbjfmY17-FkcWoxntTnCw",
             authDomain: "dz-page.firebaseapp.com",
@@ -136,7 +104,7 @@
         const db = firebase.firestore();
 
         let currentCoins = 0;
-        let unlockedBots = {}; // To store {botName: timestamp}
+        let unlockedBots = {};
         let selectedBot = "";
         let targetLink = "";
 
@@ -144,18 +112,14 @@
         const modalBotName = document.getElementById('modal-bot-name');
         const confirmBtn = document.getElementById('confirm-deploy-btn');
 
-        // Bot Data
+        // Config for single bot
         const botsConfig = [
-            { id: 1, name: 'Zanta-MD', link: '/zanta' },
-            { id: 2, name: 'Danuwa-MD', link: 'https://danuwa-pair.onrender.com' },
-            { id: 3, name: 'Flexa-MD', link: 'https://flexa-pair.onrender.com' }
+            { id: 1, name: 'Zanta-MD', link: '/zanta' }
         ];
 
-        // Check Auth State
         firebase.auth().onAuthStateChanged((user) => {
-            if (!user) { 
-                window.location.href = "/login"; 
-            } else {
+            if (!user) { window.location.href = "/login"; } 
+            else {
                 const photo = user.photoURL || `https://ui-avatars.com/api/?name=${user.email.split('@')[0]}&background=2563eb&color=fff&bold=true`;
                 document.getElementById('user-img').src = photo;
                 fetchUserData(user);
@@ -167,7 +131,7 @@
                 if (doc.exists) {
                     const data = doc.data();
                     currentCoins = data.coins || 0;
-                    unlockedBots = data.unlocked_bots || {}; // Use Firestore Map
+                    unlockedBots = data.unlocked_bots || {};
                     document.getElementById('user-coins').innerText = currentCoins.toLocaleString();
                     updateUI();
                 }
@@ -186,21 +150,13 @@
                 const isStillUnlocked = (now - unlockTimestamp) < TWO_DAYS_MS;
 
                 if (isStillUnlocked) {
-                    // Bot is currently unlocked
                     const hoursLeft = Math.ceil((TWO_DAYS_MS - (now - unlockTimestamp)) / (1000 * 60 * 60));
                     btn.innerText = `OPENED (${hoursLeft}h left)`;
-                    btn.classList.remove('disabled-btn', 'bg-blue-600', 'bg-purple-600', 'bg-emerald-600');
-                    btn.classList.add('bg-slate-600');
+                    btn.className = "w-full py-4 bg-slate-600 text-white rounded-2xl font-bold transition-all shadow-xl";
                     btn.onclick = () => window.location.href = bot.link;
                     earn.classList.add('hidden');
                 } else {
-                    // Bot is locked
-                    btn.classList.remove('bg-slate-600');
-                    // Add back original colors
-                    if(bot.id === 1) btn.classList.add('bg-blue-600');
-                    if(bot.id === 2) btn.classList.add('bg-purple-600');
-                    if(bot.id === 3) btn.classList.add('bg-emerald-600');
-
+                    btn.className = "w-full py-4 bg-blue-600 text-white rounded-2xl font-bold transition-all shadow-xl";
                     if (currentCoins < 100) {
                         btn.classList.add('disabled-btn');
                         btn.innerText = "LOW BALANCE";
@@ -223,31 +179,25 @@
             modal.classList.add('active');
         }
 
-        function closeModal() {
-            modal.classList.remove('active');
-        }
+        function closeModal() { modal.classList.remove('active'); }
 
         confirmBtn.onclick = async () => {
             const user = firebase.auth().currentUser;
-            if (!user) return;
+            if (!user || currentCoins < 100) return;
 
             confirmBtn.disabled = true;
             confirmBtn.innerText = "ENGINEERING...";
 
             try {
                 const unlockTimeISO = new Date().toISOString();
-                
-                // Atomic Update: Deduct coins and update bot timestamp
                 await db.collection('users').doc(user.uid).update({
                     coins: firebase.firestore.FieldValue.increment(-100),
                     [`unlocked_bots.${selectedBot}`]: unlockTimeISO
                 });
-                
                 closeModal();
                 window.location.href = targetLink;
             } catch (error) {
-                console.error("Error:", error);
-                alert("Transaction failed. Try again.");
+                alert("Transaction failed!");
                 confirmBtn.disabled = false;
                 confirmBtn.innerText = "CONFIRM & UNLOCK";
             }
