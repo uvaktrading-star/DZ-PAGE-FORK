@@ -26,11 +26,11 @@
         .coin-anim { animation: bounce 2s infinite; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         
-        #loader { position: fixed; inset: 0; background: #0b0f1a; z-index: 9999; display: flex; items-center: center; justify-content: center; }
+        #loader { position: fixed; inset: 0; background: #0b0f1a; z-index: 9999; display: flex; align-items: center; justify-content: center; }
 
         /* Notification Toast */
         #notification-container { position: fixed; top: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: rgba(30, 41, 59, 0.9); backdrop-filter: blur(10px); border-left: 4px solid #3b82f6; color: white; padding: 16px 24px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: flex; items-center: center; gap: 12px; transform: translateX(120%); transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .toast { background: rgba(30, 41, 59, 0.9); backdrop-filter: blur(10px); border-left: 4px solid #3b82f6; color: white; padding: 16px 24px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 12px; transform: translateX(120%); transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
         .toast.show { transform: translateX(0); }
         .toast.success { border-left-color: #10b981; }
         .toast.error { border-left-color: #ef4444; }
@@ -164,7 +164,7 @@
             const container = document.getElementById('notification-container');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-info';
+            const icon = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-circle-xmark' : 'fa-circle-info');
             toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span class="text-sm font-bold">${message}</span>`;
             container.appendChild(toast);
             setTimeout(() => toast.classList.add('show'), 100);
@@ -217,18 +217,30 @@
             } catch (e) { showNotify("Action failed", "error"); btn.disabled = false; }
         }
 
-        // Ad System
+        // Updated Ad System with Monetag Direct Link
         function watchAd() {
             const btn = document.getElementById('ad-btn');
+            const AD_LINK = "https://otieu.com/4/10543095"; // Your Monetag Link
+            
             btn.disabled = true;
-            btn.innerText = "WAIT (6S)";
-            showNotify("Synchronizing with Ad server...", "info");
+            btn.innerText = "OPENING...";
+            
+            showNotify("Redirecting to Ad server...", "info");
+
+            // Open the Monetag Direct Link in a new tab
+            window.open(AD_LINK, '_blank');
+
+            // Wait 6 seconds before awarding coins to ensure engagement
             setTimeout(async () => {
                 const user = firebase.auth().currentUser;
-                await db.collection('users').doc(user.uid).update({
-                    coins: firebase.firestore.FieldValue.increment(10)
-                });
-                showNotify("Earned 10 Coins!", "success");
+                try {
+                    await db.collection('users').doc(user.uid).update({
+                        coins: firebase.firestore.FieldValue.increment(10)
+                    });
+                    showNotify("Earned 10 Coins!", "success");
+                } catch (e) {
+                    showNotify("Failed to update coins", "error");
+                }
                 btn.disabled = false;
                 btn.innerText = "START";
             }, 6000);
